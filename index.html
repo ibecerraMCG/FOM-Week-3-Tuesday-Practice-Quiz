@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 Tuesday Practice Quiz</title>
+    <style>
+        /* --- Color Variables --- */
+        :root {
+            /* Default: Dark Theme */
+            --bg-color: #2d343e; /* Dark background */
+            --container-bg: #3c424f; /* Slightly lighter container */
+            --text-color: #e8e6e3; /* Light text */
+            --question-text-color: #8ab4f8; /* Light blue for questions */
+            --lo-text-color: #b0c4de; /* Lighter blue for learning objective */
+            --border-color: #555; /* Darker borders */
+            --separator-color: #4a4f5a;
+            --label-bg: #454c5a;
+            --label-border: #6c757d;
+            --label-hover-bg: #525966;
+            --label-hover-border: #7a828a;
+            --button-bg: #8ab4f8;
+            --button-text: #202124;
+            --button-hover-bg: #a3c5f9;
+            --button-disabled-bg: #5f6368;
+            --feedback-correct-bg: #344e41;
+            --feedback-correct-text: #c7f9cc;
+            --feedback-correct-border: #52b788;
+            --feedback-incorrect-bg: #5e2129;
+            --feedback-incorrect-text: #f8d7da;
+            --feedback-incorrect-border: #a4133c;
+            --feedback-rationale-text: #adb5bd; /* Lighter gray for rationale */
+            --feedback-source-text: #c7d3e0;
+            --feedback-separator: #6c757d;
+            --radio-accent: #8ab4f8;
+        }
+
+        .light-theme {
+            --bg-color: #eef2f7;
+            --container-bg: #ffffff;
+            --text-color: #343a40;
+            --question-text-color: #0056b3;
+            --lo-text-color: #5a6e8a;
+            --border-color: #dee2e6;
+            --separator-color: #e9ecef;
+            --label-bg: #f8f9fa;
+            --label-border: #ced4da;
+            --label-hover-bg: #e2e6ea;
+            --label-hover-border: #adb5bd;
+            --button-bg: #007bff;
+            --button-text: white;
+            --button-hover-bg: #0056b3;
+            --button-disabled-bg: #6c757d;
+            --feedback-correct-bg: #d1e7dd;
+            --feedback-correct-text: #0f5132;
+            --feedback-correct-border: #badbcc;
+            --feedback-incorrect-bg: #f8d7da;
+            --feedback-incorrect-text: #842029;
+            --feedback-incorrect-border: #f5c2c7;
+            --feedback-rationale-text: #495057;
+            --feedback-source-text: #343a40;
+            --feedback-separator: #ccc;
+            --radio-accent: #007bff;
+        }
+
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.7;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle-button {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--label-border);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            z-index: 1000;
+             transition: background-color 0.3s, color 0.3s;
+        }
+         #theme-toggle-button:hover {
+             opacity: 0.8;
+         }
+
+
+        #quiz-container {
+            max-width: 900px;
+            margin: 80px auto 30px auto;
+            background: var(--container-bg);
+            padding: 25px 35px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--separator-color);
+            transition: border-color 0.3s;
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 5px;
+        }
+        
+        .learning-objective {
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--lo-text-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--separator-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 18px;
+            color: var(--question-text-color);
+            transition: color 0.3s;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--label-border);
+            background-color: var(--label-bg);
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+
+        .options label:hover {
+            background-color: var(--label-hover-bg);
+            border-color: var(--label-hover-border);
+        }
+
+        .options input[type="radio"]:checked+span {
+             font-weight: bold;
+             color: var(--question-text-color);
+        }
+        .options input[type="radio"] {
+            margin-right: 12px;
+            accent-color: var(--radio-accent);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .check-button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.2s, color 0.2s, opacity 0.2s;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+        }
+
+        .check-button:hover {
+            opacity: 0.85;
+        }
+
+         .check-button:disabled {
+             background-color: var(--button-disabled-bg);
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: none;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-correct-bg);
+            color: var(--feedback-correct-text);
+            border-color: var(--feedback-correct-border);
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-incorrect-bg);
+            color: var(--feedback-incorrect-text);
+            border-color: var(--feedback-incorrect-border);
+            display: block;
+        }
+
+        .feedback-status {
+             font-weight: bold;
+             font-size: 1.1em;
+             display: block;
+             margin-bottom: 8px;
+        }
+
+        .feedback-rationale {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--feedback-separator);
+            font-size: 0.9em;
+            color: var(--feedback-rationale-text);
+            transition: color 0.3s, border-color 0.3s;
+        }
+        
+        .feedback-source {
+            margin-top: 10px;
+            font-size: 0.85em;
+            font-style: italic;
+            color: var(--feedback-source-text);
+            background-color: rgba(0,0,0,0.1);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--question-text-color);
+            margin-top: 30px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+    </style>
+</head>
+<body>
+
+    <button id="theme-toggle-button">Toggle Theme</button>
+    <h1>Week 3 Tuesday Practice Quiz</h1>
+
+    <div id="quiz-container">
+        <!-- Questions will be loaded here by JavaScript -->
+    </div>
+
+    <script>
+        const quizData = [
+    {
+        learningObjective: "LO1 (Minor Pathways of Hexose Metabolism): Explain how galactose and fructose feed into the glycolytic pathway and explain the biochemical and potential clinical consequences of genetic defects in galactose and fructose metabolism.",
+        question: "A 2-week-old infant is brought to the clinic with vomiting, diarrhea, jaundice, and hepatomegaly shortly after initiating breastfeeding. Lab tests reveal elevated plasma galactose and galactitol. A deficiency in which of the following enzymes is the most likely cause of this infant's condition?",
+        options: { 
+            A: "Galactokinase", 
+            B: "Galactose-1-phosphate uridyltransferase (GALT)", 
+            C: "Aldolase B", 
+            D: "Fructokinase" 
+        },
+        correctAnswer: "B",
+        rationale: "This presentation is classic for classic galactosemia, an autosomal recessive disorder caused by a deficiency in GALT. This enzyme is crucial for metabolizing galactose-1-phosphate. Its deficiency leads to a toxic buildup of galactose-1-phosphate and galactitol, causing severe liver damage, cataracts, and failure to thrive. Galactokinase deficiency is milder and primarily causes cataracts.",
+        source: "'Disorders of galactose metabolism - Classic galactosemia (type 1)... is due to a deficiency of galactose-1-phosphate uridyltransferase (GALT). The symptoms present in the first weeks after birth and manifests by a failure to thrive associated with vomiting and diarrhea. Physical examination will reveal hepatomegaly, yellowing of sclera and skin and cataracts.' (Minor Pathways of Hexose Metabolism, Page 4)"
+    },
+    {
+        learningObjective: "LO1 (Minor Pathways of Hexose Metabolism): Explain how galactose and fructose feed into the glycolytic pathway and explain the biochemical and potential clinical consequences of genetic defects in galactose and fructose metabolism.",
+        question: "A 6-month-old infant presents with poor feeding, vomiting, and failure to thrive after the introduction of fruit juices and pureed fruits into his diet. Lab studies show hypoglycemia, hypophosphatemia, and liver dysfunction. Urinalysis is positive for reducing sugars. This infant most likely has a deficiency in which enzyme?",
+        options: { 
+            A: "Fructokinase", 
+            B: "Aldolase B", 
+            C: "Galactose-1-phosphate uridyltransferase (GALT)", 
+            D: "Aldose reductase" 
+        },
+        correctAnswer: "B",
+        rationale: "This is the classic presentation of hereditary fructose intolerance, caused by a deficiency in aldolase B. This enzyme deficiency leads to a toxic accumulation of fructose-1-phosphate after fructose ingestion. This traps intracellular phosphate, inhibiting glycogenolysis and gluconeogenesis, which results in severe hypoglycemia and liver damage. Essential fructosuria (fructokinase deficiency) is a benign condition.",
+        source: "'Disorders of fructose metabolism - hereditary fructose intolerance... is due to mutations in the aldolase B gene. The symptoms usually present in infants with the introduction of fructose-containing foods...' (Minor Pathways of Hexose Metabolism, Page 6)"
+    },
+    {
+        learningObjective: "LO1 (Minor Pathways of Hexose Metabolism): Explain how galactose and fructose feed into the glycolytic pathway and explain the biochemical and potential clinical consequences of genetic defects in galactose and fructose metabolism.",
+        question: "A patient with a high-fructose diet develops hypertriglyceridemia. The unregulated metabolism of fructose in the liver contributes to this condition because it bypasses the primary regulatory step of glycolysis. Which enzyme is bypassed?",
+        options: { 
+            A: "Hexokinase", 
+            B: "Phosphofructokinase-1 (PFK-1)", 
+            C: "Pyruvate kinase", 
+            D: "Glucokinase" 
+        },
+        correctAnswer: "B",
+        rationale: "Fructose is converted to fructose-1-phosphate and then cleaved into glyceraldehyde and DHAP. These triose phosphates enter the glycolytic pathway downstream of phosphofructokinase-1 (PFK-1), which is the major rate-limiting and hormonally regulated step. This bypass allows for an unregulated flux of carbons through glycolysis, providing excess acetyl-CoA for triglyceride synthesis.",
+        source: "'...fructose entry into glycolytic pathway bypasses the hormonal regulation and allosteric regulation that is exerted on glycolysis at PFK1. Thus, fructose consumption can feed metabolites into glycolysis in an unregulated fashion...' (Minor Pathways of Hexose Metabolism, Page 5)"
+    },
+    {
+        learningObjective: "LO2 (Minor Pathways of Hexose Metabolism): Explain sorbitol (polyol) pathway and its consequence in diabetic complications.",
+        question: "A 65-year-old man with a 20-year history of poorly controlled type 2 diabetes presents with decreased vision and bilateral cataracts. The formation of these cataracts is primarily initiated by the conversion of excess glucose to sorbitol by which of the following enzymes?",
+        options: { 
+            A: "Sorbitol dehydrogenase", 
+            B: "Hexokinase", 
+            C: "Aldose reductase", 
+            D: "Fructokinase" 
+        },
+        correctAnswer: "C",
+        rationale: "In states of hyperglycemia, the high concentration of glucose allows it to be shunted into the polyol pathway. The first step is the reduction of glucose to sorbitol, a reaction catalyzed by aldose reductase. Sorbitol is osmotically active and its accumulation in the lens, which has low sorbitol dehydrogenase activity, leads to osmotic swelling and cataract formation.",
+        source: "'In the first step, the enzyme aldose reductase reduces the aldose sugars (glucose and galactose) to corresponding sugar alcohols (sorbitol and galactitol).' (Minor Pathways of Hexose Metabolism, Page 9)"
+    },
+    {
+        learningObjective: "LO2 (Minor Pathways of Hexose Metabolism): Explain sorbitol (polyol) pathway and its consequence in diabetic complications.",
+        question: "A patient with classic galactosemia develops cataracts despite a galactose-free diet. This is possible because the toxic metabolite, galactitol, can still be formed from galactose that is synthesized endogenously. The accumulation of galactitol in the lens causes osmotic damage because, unlike sorbitol, it cannot be further metabolized by which of the following enzymes?",
+        options: { 
+            A: "Aldose reductase", 
+            B: "Galactokinase", 
+            C: "Sorbitol dehydrogenase", 
+            D: "Galactose-1-phosphate uridyltransferase" 
+        },
+        correctAnswer: "C",
+        rationale: "The polyol pathway has two steps. Aldose reductase converts aldoses (glucose, galactose) to their respective sugar alcohols (sorbitol, galactitol). The second enzyme, sorbitol dehydrogenase, can convert sorbitol to fructose. However, it cannot act on galactitol. Therefore, once formed, galactitol is trapped in cells like those of the lens, leading to severe osmotic damage.",
+        source: "'No cell in the human body can metabolize galactitol and it accumulates within the cell and causes osmotic effects as well.' (Minor Pathways of Hexose Metabolism, Page 9) and the pathway diagram on the same page shows sorbitol dehydrogenase acting only on sorbitol."
+    },
+    {
+        learningObjective: "LO2 (Minor Pathways of Hexose Metabolism): Explain sorbitol (polyol) pathway and its consequence in diabetic complications.",
+        question: "In a patient with chronic hyperglycemia, increased activity of the polyol pathway in nerve cells is thought to contribute to diabetic neuropathy. Besides osmotic stress from sorbitol accumulation, what other metabolic consequence of this pathway contributes to cellular damage?",
+        options: { 
+            A: "Increased production of ATP", 
+            B: "Depletion of NAD+", 
+            C: "Depletion of NADPH", 
+            D: "Increased production of fructose" 
+        },
+        correctAnswer: "C",
+        rationale: "The aldose reductase enzyme uses NADPH as a cofactor, converting it to NADP+. In chronic hyperglycemia, the high flux through this pathway consumes significant amounts of NADPH. NADPH is critical for regenerating reduced glutathione, the primary antioxidant in cells. Depletion of NADPH impairs the cell's ability to neutralize reactive oxygen species, leading to increased oxidative stress and cellular damage.",
+        source: "'Increased aldose reductase activity lowers the concentration of NADPH and thus also lowers the concentration of reduced glutathione. This in turn may permit the presence of increased amounts of reactive oxygen species (ROS)...' (Minor Pathways of Hexose Metabolism, Page 10)"
+    },
+    {
+        learningObjective: "LO3 (Minor Pathways of Hexose Metabolism): Explain the significance and metabolic products of the pentose phosphate pathway and discuss the biochemical and clinical consequences of a genetic defect in glucose-6-phosphate dehydrogenase (G6PD) deficiency) enzyme in RBCs.",
+        question: "A 25-year-old African American man develops acute hemolytic anemia after being treated with a sulfa drug for a urinary tract infection. A blood smear shows red blood cells with Heinz bodies. This clinical picture is most characteristic of a deficiency in which of the following enzymes?",
+        options: { 
+            A: "Pyruvate kinase", 
+            B: "Glucose-6-phosphate dehydrogenase (G6PD)", 
+            C: "Transketolase", 
+            D: "Glutathione reductase" 
+        },
+        correctAnswer: "B",
+        rationale: "G6PD deficiency is an X-linked disorder common in African American populations. G6PD is the rate-limiting enzyme of the pentose phosphate pathway, the sole source of NADPH in red blood cells. NADPH is required to keep glutathione in a reduced state to protect against oxidative damage. Oxidant drugs, like sulfa drugs, overwhelm this deficient protective mechanism, leading to hemoglobin denaturation (Heinz bodies) and hemolysis.",
+        source: "'Mutation that causes an unstable enzyme is more prevalent in African American & Mediterranean population... Reduced activity of G6PD sensitizes RBCs to oxidative stress caused by infection, oxidative drugs... → hemolytic anemia.' (Minor Pathways of Hexose Metabolism, Page 15)"
+    },
+    {
+        learningObjective: "LO3 (Minor Pathways of Hexose Metabolism): Explain the significance and metabolic products of the pentose phosphate pathway and discuss the biochemical and clinical consequences of a genetic defect in glucose-6-phosphate dehydrogenase (G6PD) deficiency) enzyme in RBCs.",
+        question: "The pentose phosphate pathway (PPP) has two main products that are crucial for cellular metabolism. In a rapidly dividing cell, such as in a cancerous tumor, which product of the PPP is primarily used for the synthesis of nucleotides?",
+        options: { 
+            A: "NADPH", 
+            B: "Fructose-6-phosphate", 
+            C: "Glyceraldehyde-3-phosphate", 
+            D: "Ribose-5-phosphate" 
+        },
+        correctAnswer: "D",
+        rationale: "The pentose phosphate pathway produces both NADPH (for reductive biosynthesis and antioxidant defense) and ribose-5-phosphate. Ribose-5-phosphate is the direct precursor for the synthesis of purine and pyrimidine nucleotides, which are the building blocks of DNA and RNA. Therefore, highly proliferative tissues have a high demand for this product.",
+        source: "'Ribose-5-phosphate – substrate for nucleotide synthesis – proliferative tissues.' (Minor Pathways of Hexose Metabolism, Page 13)"
+    },
+    {
+        learningObjective: "LO3 (Minor Pathways of Hexose Metabolism): Explain the significance and metabolic products of the pentose phosphate pathway and discuss the biochemical and clinical consequences of a genetic defect in glucose-6-phosphate dehydrogenase (G6PD) deficiency) enzyme in RBCs.",
+        question: "A physician suspects a patient has a thiamine (vitamin B1) deficiency. To confirm the diagnosis, the activity of which of the following enzymes would be measured in the patient's red blood cells?",
+        options: { 
+            A: "Glucose-6-phosphate dehydrogenase", 
+            B: "Pyruvate dehydrogenase", 
+            C: "Transketolase", 
+            D: "Alpha-ketoglutarate dehydrogenase" 
+        },
+        correctAnswer: "C",
+        rationale: "Transketolase is an enzyme in the non-oxidative branch of the pentose phosphate pathway that requires thiamine pyrophosphate (TPP), the active form of vitamin B1, as a cofactor. Because it is present in red blood cells (which are easily accessible) and is cytosolic, its activity is a reliable and standard clinical measure of a patient's thiamine status.",
+        source: "'Transketolase, a thiamine-dependent enzyme – activity measured to determine thiamine status in the body.' (Minor Pathways of Hexose Metabolism, Page 11)"
+    },
+    {
+        learningObjective: "LO4 (Minor Pathways of Hexose Metabolism): List the main sources of reactive oxygen species, explain the phenomenon and significance of respiratory burst, and describe the cellular mechanisms that protect the cell from the potential damage induced by reactive oxygen species.",
+        question: "A 5-year-old boy presents with a history of recurrent, severe infections with catalase-positive organisms like Staphylococcus aureus. His neutrophils fail to produce a respiratory burst upon stimulation. This condition, chronic granulomatous disease (CGD), is most commonly caused by a genetic defect in which enzyme complex?",
+        options: { 
+            A: "Myeloperoxidase", 
+            B: "Superoxide dismutase", 
+            C: "NADPH oxidase", 
+            D: "Glutathione peroxidase" 
+        },
+        correctAnswer: "C",
+        rationale: "The respiratory burst in phagocytes is initiated by the NADPH oxidase complex, which transfers an electron from NADPH to molecular oxygen to form the superoxide radical. This is the first and essential step in producing the reactive oxygen species (ROS) needed to kill ingested pathogens. A defect in this complex leads to CGD, characterized by an inability to fight off certain infections.",
+        source: "'Chronic granulomatous disease (CGD) – defect in NADPH oxidase, severe recurrent bacterial and fungal infections, ~75% of CGD cases are X-linked.' (Minor Pathways of Hexose Metabolism, Page 19)"
+    },
+    {
+        learningObjective: "LO4 (Minor Pathways of Hexose Metabolism): List the main sources of reactive oxygen species, explain the phenomenon and significance of respiratory burst, and describe the cellular mechanisms that protect the cell from the potential damage induced by reactive oxygen species.",
+        question: "During phagocytosis, neutrophils generate superoxide (O2•−), which is then converted to hydrogen peroxide (H2O2). The enzyme myeloperoxidase then uses H2O2 and chloride ions (Cl−) to produce a potent microbicidal agent, which is the active ingredient in household bleach. What is this agent?",
+        options: { 
+            A: "Hydroxyl radical (•OH)", 
+            B: "Hypochlorous acid (HOCl)", 
+            C: "Peroxynitrite (ONOO−)", 
+            D: "Ozone (O3)" 
+        },
+        correctAnswer: "B",
+        rationale: "Myeloperoxidase is a key enzyme in the phagosome that catalyzes the reaction between hydrogen peroxide and chloride ions to form hypochlorous acid (HOCl). HOCl is a powerful oxidizing and chlorinating agent that is highly effective at killing bacteria and other pathogens.",
+        source: "'H2O2 + 2Cl- --[Myeloperoxidase]--> 2HOCl Hypochlorous acid.' (Minor Pathways of Hexose Metabolism, Page 18)"
+    },
+    {
+        learningObjective: "LO4 (Minor Pathways of Hexose Metabolism): List the main sources of reactive oxygen species, explain the phenomenon and significance of respiratory burst, and describe the cellular mechanisms that protect the cell from the potential damage induced by reactive oxygen species.",
+        question: "A cell is exposed to high levels of oxidative stress, leading to the formation of organic hydroperoxides (ROOH) that can damage cellular lipids. The detoxification of these compounds is catalyzed by glutathione peroxidase, an enzyme that requires which of the following elements as an essential cofactor?",
+        options: { 
+            A: "Iron", 
+            B: "Zinc", 
+            C: "Copper", 
+            D: "Selenium" 
+        },
+        correctAnswer: "D",
+        rationale: "Glutathione peroxidase is a selenoenzyme, meaning it contains selenium in the form of the amino acid selenocysteine at its active site. This cofactor is essential for the enzyme's function in reducing hydrogen peroxide and organic hydroperoxides, thereby protecting the cell from oxidative damage.",
+        source: "'Glutathione peroxidase: ... Enzyme containing four selenium atoms (as selenocysteine); catalyzes the breakdown of H2O2 and organic hydroperoxides.' (Minor Pathways of Hexose Metabolism, Page 22)"
+    },
+    {
+        learningObjective: "LO1 (Disorders of Lipid Metabolism): Highlight the key enzymes/events in cellular fatty acid metabolism (oxidation and biosynthesis).",
+        question: "A medical student is studying fatty acid synthesis in a liver cell culture under well-fed conditions with high insulin levels. The conversion of acetyl-CoA to malonyl-CoA is identified as the rate-limiting step. Which enzyme catalyzes this reaction?",
+        options: { 
+            A: "Fatty acid synthase", 
+            B: "ATP citrate lyase", 
+            C: "Acetyl-CoA carboxylase (ACC)", 
+            D: "Carnitine palmitoyltransferase I (CPT-I)" 
+        },
+        correctAnswer: "C",
+        rationale: "Acetyl-CoA carboxylase (ACC) catalyzes the carboxylation of acetyl-CoA to malonyl-CoA. This is the first committed and rate-limiting step of fatty acid biosynthesis. The activity of ACC is tightly regulated by hormones (activated by insulin-mediated dephosphorylation) and allosteric effectors (activated by citrate).",
+        source: "'How: Major steps: (2) acetyl CoA carboxylase (ACC) = acetyl CoA → malonyl CoA'. The diagram also labels this as the 'Rate limiting step in FA biosynthesis'. (Disorders of Lipid Metabolism, Page 5)"
+    },
+    {
+        learningObjective: "LO1 (Disorders of Lipid Metabolism): Highlight the key enzymes/events in cellular fatty acid metabolism (oxidation and biosynthesis).",
+        question: "During a period of prolonged fasting, a patient's adipose tissue releases free fatty acids into the bloodstream. Before these fatty acids can be oxidized in the mitochondria of other tissues, they must first be activated in the cytoplasm. This activation step involves the attachment of coenzyme A, a reaction catalyzed by which enzyme?",
+        options: { 
+            A: "Lipoprotein lipase", 
+            B: "Hormone-sensitive lipase", 
+            C: "Acyl-CoA synthetase", 
+            D: "Acetyl-CoA carboxylase" 
+        },
+        correctAnswer: "C",
+        rationale: "Free fatty acids must be converted to their active form, fatty acyl-CoA, before they can be metabolized. This reaction is catalyzed by acyl-CoA synthetase (also called thiokinase) on the outer mitochondrial membrane. The reaction is irreversible due to the subsequent hydrolysis of pyrophosphate (PPi).",
+        source: "'Fatty acid activation is the process of converting FFAs into their active form. In the active form they are attached to CoA. This attachment is catalyzed by Acyl CoA synthase or synthetase, a thiokinase enzyme.' (Disorders of Lipid Metabolism, Page 15)"
+    },
+    {
+        learningObjective: "LO1 (Disorders of Lipid Metabolism): Highlight the key enzymes/events in cellular fatty acid metabolism (oxidation and biosynthesis).",
+        question: "The transport of long-chain fatty acyl-CoA from the cytosol into the mitochondrial matrix for β-oxidation is a highly regulated process. Which of the following molecules serves as the carrier for the acyl group across the inner mitochondrial membrane?",
+        options: { 
+            A: "Citrate", 
+            B: "Malate", 
+            C: "Carnitine", 
+            D: "Albumin" 
+        },
+        correctAnswer: "C",
+        rationale: "Long-chain fatty acyl-CoAs cannot cross the inner mitochondrial membrane directly. The acyl group is transferred from CoA to carnitine by carnitine palmitoyltransferase I (CPT-I). The resulting acylcarnitine is then transported across the inner membrane by a translocase. CPT-II on the matrix side then transfers the acyl group back to CoA.",
+        source: "'Transport of fatty acids from cytoplasm (outer mito membrane) to Mitochondrial Matrix: The role of carnitine.' (Disorders of Lipid Metabolism, Page 17)"
+    },
+    {
+        learningObjective: "LO2 (Disorders of Lipid Metabolism): Explain how the simultaneous synthesis and oxidation of fatty acids is prevented in the cell.",
+        question: "In a hepatocyte during a well-fed state, high levels of insulin promote fatty acid synthesis. A key intermediate in this synthetic pathway also acts as a potent inhibitor of fatty acid oxidation, ensuring the two processes do not occur simultaneously. What is this inhibitory molecule?",
+        options: { 
+            A: "Acetyl-CoA", 
+            B: "Palmitoyl-CoA", 
+            C: "Citrate", 
+            D: "Malonyl-CoA" 
+        },
+        correctAnswer: "D",
+        rationale: "Malonyl-CoA is the product of the rate-limiting step of fatty acid synthesis (catalyzed by ACC). In addition to being the building block for the growing fatty acid chain, malonyl-CoA allosterically inhibits carnitine palmitoyltransferase I (CPT-I). This inhibition prevents the transport of fatty acids into the mitochondria, thereby blocking β-oxidation while synthesis is active.",
+        source: "'Secondary Signals: Malonyl CoA inhibits carnitine acyl transferase-I.' (Disorders of Lipid Metabolism, Page 40)"
+    },
+    {
+        learningObjective: "LO2 (Disorders of Lipid Metabolism): Explain how the simultaneous synthesis and oxidation of fatty acids is prevented in the cell.",
+        question: "A patient is in a fasting state, leading to high levels of glucagon. Glucagon signaling in the liver leads to the phosphorylation and inactivation of acetyl-CoA carboxylase (ACC). The primary purpose of inhibiting ACC during fasting is to:",
+        options: { 
+            A: "Promote the synthesis of ketone bodies.", 
+            B: "Increase the rate of glycolysis.", 
+            C: "Prevent the inhibition of β-oxidation by removing malonyl-CoA.", 
+            D: "Stimulate the export of citrate from the mitochondria." 
+        },
+        correctAnswer: "C",
+        rationale: "During fasting, the body needs to oxidize fatty acids for energy. Glucagon inactivates ACC, which stops the production of malonyl-CoA. Since malonyl-CoA is a potent inhibitor of CPT-I (the gateway to β-oxidation), its removal allows fatty acids to be transported into the mitochondria and be oxidized.",
+        source: "'Glucagon: Promotes phosphorylation (via activation of PKA) leading to... inhibition of anabolic pathways (glycogen synthesis).' Fatty acid synthesis is an anabolic pathway. The diagram on page 5 shows glucagon signaling through PKA to inactivate ACC. (Disorders of Lipid Metabolism, Pages 6 & 5)"
+    },
+    {
+        learningObjective: "LO2 (Disorders of Lipid Metabolism): Explain how the simultaneous synthesis and oxidation of fatty acids is prevented in the cell.",
+        question: "The metabolic pathways of fatty acid synthesis and β-oxidation are reciprocally regulated. A key aspect of this regulation is their physical separation within the cell. Where do these two processes primarily occur?",
+        options: { 
+            A: "Both occur in the mitochondrial matrix.", 
+            B: "Both occur in the cytoplasm.", 
+            C: "Synthesis occurs in the cytoplasm, and oxidation occurs in the mitochondria.", 
+            D: "Synthesis occurs in the mitochondria, and oxidation occurs in the cytoplasm." 
+        },
+        correctAnswer: "C",
+        rationale: "Compartmentalization is a crucial mechanism for preventing futile cycling. Fatty acid synthesis occurs in the cytoplasm, where NADPH levels are high. Fatty acid β-oxidation occurs in the mitochondrial matrix, where FAD and NAD+ are available for the oxidation reactions and the acetyl-CoA produced can directly enter the TCA cycle.",
+        source: "'Subcellular location... Cytoplasm: Fatty acid biosynthesis... Mitochondria: Fatty Acid oxidation.' (Disorders of Lipid Metabolism, Page 41)"
+    },
+    {
+        learningObjective: "LO3 (Disorders of Lipid Metabolism): Discuss the clinical relevance of defects in fatty acid metabolism to human disease.",
+        question: "An infant presents with lethargy, vomiting, and profound hypoglycemia following a period of fasting. Laboratory tests reveal an absence of ketone bodies in the urine and blood. This presentation is highly suggestive of a deficiency in which of the following enzymes?",
+        options: { 
+            A: "Carnitine palmitoyltransferase I (CPT-I)", 
+            B: "Medium-chain acyl-CoA dehydrogenase (MCAD)", 
+            C: "HMG-CoA synthase", 
+            D: "Acetyl-CoA carboxylase" 
+        },
+        correctAnswer: "B",
+        rationale: "MCAD deficiency is the most common inborn error of fatty acid oxidation. During fasting, the inability to oxidize medium-chain fatty acids prevents the production of acetyl-CoA, which is needed for both energy (TCA cycle) and ketogenesis. The result is severe hypoketotic hypoglycemia, as tissues become overly reliant on glucose, which cannot be adequately supplied by gluconeogenesis.",
+        source: "'MCAD Deficiency... Symptoms: Intolerance to prolonged fasting, Impaired ketogenesis, Hypoglycemia.' (Disorders of Lipid Metabolism, Page 26)"
+    },
+    {
+        learningObjective: "LO3 (Disorders of Lipid Metabolism): Discuss the clinical relevance of defects in fatty acid metabolism to human disease.",
+        question: "A patient presents with progressive neurological symptoms, including tremors, ataxia, and poor night vision. A dietary history reveals high consumption of dairy products and meat from ruminant animals. Laboratory analysis shows an accumulation of phytanic acid. This patient's symptoms are caused by a defect in which metabolic pathway?",
+        options: { 
+            A: "Beta-oxidation", 
+            B: "Omega-oxidation", 
+            C: "Alpha-oxidation", 
+            D: "Ketogenesis" 
+        },
+        correctAnswer: "C",
+        rationale: "This is the classic presentation of Refsum's disease, a disorder of peroxisomal alpha-oxidation. Phytanic acid is a branched-chain fatty acid that cannot undergo beta-oxidation due to a methyl group on the beta-carbon. It must first be shortened by one carbon via alpha-oxidation. A defect in this pathway leads to the toxic accumulation of phytanic acid.",
+        source: "'Alpha Oxidation... Specific to Dietary FA (Long-branched chain FA)... Alpha oxidation of phytanic acid... Refsum's'. (Disorders of Lipid Metabolism, Page 34)"
+    },
+    {
+        learningObjective: "LO3 (Disorders of Lipid Metabolism): Discuss the clinical relevance of defects in fatty acid metabolism to human disease.",
+        question: "A newborn infant develops abnormal liver and kidney function and dies within the first year of life. Autopsy reveals a complete absence of functional peroxisomes in the cells. This condition, known as Zellweger syndrome, would lead to the accumulation of which type of fatty acid?",
+        options: { 
+            A: "Short-chain fatty acids", 
+            B: "Medium-chain fatty acids", 
+            C: "Long-chain fatty acids", 
+            D: "Very-long-chain fatty acids" 
+        },
+        correctAnswer: "D",
+        rationale: "Peroxisomes are essential for the initial steps of beta-oxidation of very-long-chain fatty acids (VLCFAs, >20 carbons). In Zellweger syndrome, the absence of peroxisomes prevents the breakdown of VLCFAs, leading to their toxic accumulation in tissues like the liver, kidney, and brain, causing severe developmental defects and early death.",
+        source: "'Zellweger: Absence of functional peroxisomes. Abnormal liver, kidney and muscle functions. (death in early life).' (Disorders of Lipid Metabolism, Page 36)"
+    },
+    {
+        learningObjective: "LO4 (Disorders of Lipid Metabolism): Explain the importance of ketone bodies as critical fuels for extrahepatic tissues and indicate the conditions in which their synthesis and use are favored.",
+        question: "During prolonged starvation, the brain adapts to use an alternative fuel source to spare glucose. Which of the following is the primary source of this alternative fuel?",
+        options: { 
+            A: "Glycogenolysis in the liver", 
+            B: "Gluconeogenesis from amino acids", 
+            C: "Ketogenesis from fatty acids in the liver", 
+            D: "Breakdown of triglycerides in the brain" 
+        },
+        correctAnswer: "C",
+        rationale: "During prolonged fasting or starvation, the liver ramps up beta-oxidation of fatty acids, producing large amounts of acetyl-CoA. This excess acetyl-CoA is converted into ketone bodies (acetoacetate and β-hydroxybutyrate). Ketone bodies are water-soluble and can cross the blood-brain barrier to be used as a major fuel source by the brain, thus sparing glucose.",
+        source: "'KETONE BODIES: When do we make ketones?' The diagram shows that in fasting/starvation, lipid stores are broken down to fatty acids, which become acetyl-CoA and then ketone bodies. (Disorders of Lipid Metabolism, Page 43)"
+    },
+    {
+        learningObjective: "LO4 (Disorders of Lipid Metabolism): Explain the importance of ketone bodies as critical fuels for extrahepatic tissues and indicate the conditions in which their synthesis and use are favored.",
+        question: "A patient with type 1 diabetes presents to the emergency department with ketoacidosis. While extrahepatic tissues like muscle and brain can readily use ketone bodies for energy, the liver cannot. The inability of the liver to utilize ketone bodies is due to the absence of which key enzyme?",
+        options: { 
+            A: "HMG-CoA synthase", 
+            B: "HMG-CoA lyase", 
+            C: "Thiophorase (succinyl-CoA:acetoacetate CoA transferase)", 
+            D: "β-hydroxybutyrate dehydrogenase" 
+        },
+        correctAnswer: "C",
+        rationale: "The liver synthesizes ketone bodies but lacks the enzyme thiophorase. This enzyme is required for the first step of ketone body utilization: the activation of acetoacetate to acetoacetyl-CoA by transferring a CoA group from succinyl-CoA. Its absence ensures that the liver exports the ketone bodies it produces for use by other tissues.",
+        source: "'Thiophorase (succinyl CoA:acetoacetate CoA transferase) is absent in the liver.' (Disorders of Lipid Metabolism, Page 45)"
+    },
+    {
+        learningObjective: "LO4 (Disorders of Lipid Metabolism): Explain the importance of ketone bodies as critical fuels for extrahepatic tissues and indicate the conditions in which their synthesis and use are favored.",
+        question: "In a patient with uncontrolled type 1 diabetes, high levels of glucagon and low levels of insulin lead to massive mobilization of fatty acids from adipose tissue. This hormonal state creates a high flux of acetyl-CoA in the liver, overwhelming the TCA cycle and shunting the excess acetyl-CoA into ketogenesis. This process occurs primarily in which subcellular compartment?",
+        options: { 
+            A: "Cytosol", 
+            B: "Mitochondria", 
+            C: "Peroxisome", 
+            D: "Endoplasmic reticulum" 
+        },
+        correctAnswer: "B",
+        rationale: "Fatty acid β-oxidation occurs in the mitochondria, generating a large amount of acetyl-CoA. The enzymes responsible for converting this acetyl-CoA into ketone bodies—thiolase, HMG-CoA synthase, and HMG-CoA lyase—are all located within the mitochondrial matrix.",
+        source: "'Synthesis of ketone bodies (in liver mitochondria).' (Disorders of Lipid Metabolism, Page 43)"
+    },
+    {
+        learningObjective: "LO1 (Cholesterol Metabolism): Identify the key enzyme(s) and explain the regulatory mechanisms governing cholesterol biosynthesis and its related short-term, long-term and pharmacologic regulation.",
+        question: "A 58-year-old man with hypercholesterolemia is prescribed atorvastatin. This class of drugs effectively lowers plasma cholesterol by competitively inhibiting the rate-limiting enzyme in cholesterol biosynthesis. What is this target enzyme?",
+        options: { 
+            A: "HMG-CoA synthase", 
+            B: "HMG-CoA reductase", 
+            C: "Squalene epoxidase", 
+            D: "Acetyl-CoA carboxylase" 
+        },
+        correctAnswer: "B",
+        rationale: "Statins, such as atorvastatin and lovastatin, are structural analogs of HMG-CoA. They act as competitive inhibitors of HMG-CoA reductase, which catalyzes the conversion of HMG-CoA to mevalonate. This is the committed, rate-limiting step of cholesterol synthesis, and its inhibition is the primary mechanism by which these drugs lower cholesterol.",
+        source: "'Regulation of Cholesterol Synthesis... HMG-CoA reductase... Rate-limiting step (target of drug therapy)... Lovastatin.' (Cholesterol Metabolism, Page 6)"
+    },
+    {
+        learningObjective: "LO1 (Cholesterol Metabolism): Identify the key enzyme(s) and explain the regulatory mechanisms governing cholesterol biosynthesis and its related short-term, long-term and pharmacologic regulation.",
+        question: "A researcher is studying cholesterol synthesis in cultured hepatocytes. When the cells are incubated in a medium with high levels of insulin, the activity of HMG-CoA reductase increases. This activation is due to insulin promoting the activity of a phosphatase, which has what effect on the enzyme?",
+        options: { 
+            A: "Phosphorylates and activates it", 
+            B: "Dephosphorylates and activates it", 
+            C: "Phosphorylates and inactivates it", 
+            D: "Dephosphorylates and inactivates it" 
+        },
+        correctAnswer: "B",
+        rationale: "HMG-CoA reductase is regulated by covalent modification. It is inactive when phosphorylated (by an AMP-activated kinase) and active when dephosphorylated. Insulin, a signal of the well-fed state, activates a phosphatase that removes the inhibitory phosphate group from HMG-CoA reductase, thereby stimulating cholesterol synthesis.",
+        source: "'Under the well fed condition, when insulin is high, it activates a phosphatase, that dephosphorylates HMG-CoA reductase and it becomes active enzyme.' (Cholesterol Metabolism, Page 6)"
+    },
+    {
+        learningObjective: "LO1 (Cholesterol Metabolism): Identify the key enzyme(s) and explain the regulatory mechanisms governing cholesterol biosynthesis and its related short-term, long-term and pharmacologic regulation.",
+        question: "In a state of low cellular cholesterol, the transcription factor SREBP is processed and moves to the nucleus to increase the expression of genes involved in cholesterol synthesis. This entire process is initiated when cholesterol dissociates from which regulatory protein in the ER membrane?",
+        options: { 
+            A: "HMG-CoA reductase", 
+            B: "INSIG", 
+            C: "SCAP", 
+            D: "S1P" 
+        },
+        correctAnswer: "C",
+        rationale: "SCAP (SREBP cleavage-activating protein) is the cholesterol sensor in the ER membrane. When cholesterol levels are high, cholesterol binds to SCAP, causing it to bind to another protein, INSIG, which retains the SREBP-SCAP complex in the ER. When cholesterol levels fall, cholesterol dissociates from SCAP, releasing the complex from INSIG and allowing it to travel to the Golgi for processing.",
+        source: "'When SREBP is translated, it is bound to the ER membrane and associates with a 2nd ER membrane protein, SCAP... High Cholesterol... SCAP binds to cholesterol... Now INSIG bind to SCAP... However, when sterol levels are low... cholesterol leaves the SCAP.' (Cholesterol Metabolism, Page 7)"
+    },
+    {
+        learningObjective: "LO2 (Cholesterol Metabolism): Explain the process of cholesterol breakdown and elimination from the body with emphasis on the relevance of bile acids.",
+        question: "A patient with severe Crohn's disease undergoes a resection of their terminal ileum. Post-operatively, they develop steatorrhea and symptoms of fat-soluble vitamin deficiency. This is primarily due to the interruption of the enterohepatic circulation of what cholesterol-derived compounds?",
+        options: { 
+            A: "Steroid hormones", 
+            B: "Vitamin D", 
+            C: "Ketone bodies", 
+            D: "Bile salts" 
+        },
+        correctAnswer: "D",
+        rationale: "The enterohepatic circulation is a highly efficient process where over 95% of bile salts are reabsorbed, primarily in the terminal ileum, and returned to the liver for reuse. Resection of the ileum severely impairs this reabsorption, leading to a significant loss of bile salts in the feces. The resulting bile salt deficiency impairs fat digestion and absorption, causing steatorrhea.",
+        source: "'The mixture of bile acids and bile salts is absorbed primarily in the ileum via a Na+-bile salt cotransporter.' (Cholesterol Metabolism, Page 12)"
+    },
+    {
+        learningObjective: "LO2 (Cholesterol Metabolism): Explain the process of cholesterol breakdown and elimination from the body with emphasis on the relevance of bile acids.",
+        question: "The conversion of cholesterol into primary bile acids is a major pathway for cholesterol elimination. Which of the following enzymes catalyzes the rate-limiting and committed step in this pathway?",
+        options: { 
+            A: "HMG-CoA reductase", 
+            B: "Bile salt hydrolase (BSH)", 
+            C: "Cholesterol 7α-hydroxylase (CYP7A1)", 
+            D: "Acyl-CoA:cholesterol acyltransferase (ACAT)" 
+        },
+        correctAnswer: "C",
+        rationale: "Cholesterol 7α-hydroxylase (CYP7A1) catalyzes the first and rate-limiting step in the classic pathway of bile acid synthesis. This enzyme introduces a hydroxyl group at the 7-position of the cholesterol steroid nucleus, committing the molecule to the bile acid synthesis pathway.",
+        source: "'The CYP7A1 catalyzes the rate limiting step in the synthesis of bile acids from cholesterol.' (Cholesterol Metabolism, Page 10)"
+    },
+    {
+        learningObjective: "LO2 (Cholesterol Metabolism): Explain the process of cholesterol breakdown and elimination from the body with emphasis on the relevance of bile acids.",
+        question: "A patient with hypercholesterolemia is prescribed cholestyramine, a bile acid sequestrant. This drug lowers plasma LDL cholesterol by binding to bile acids in the intestine and preventing their reabsorption. The resulting increase in bile acid excretion leads to what compensatory change in the liver?",
+        options: { 
+            A: "Decreased synthesis of cholesterol", 
+            B: "Upregulation of LDL receptors", 
+            C: "Downregulation of HMG-CoA reductase", 
+            D: "Increased secretion of VLDL" 
+        },
+        correctAnswer: "B",
+        rationale: "By depleting the pool of returning bile acids, cholestyramine forces the liver to synthesize new bile acids from cholesterol. To obtain more cholesterol for this purpose, hepatocytes upregulate the expression of LDL receptors on their surface. This increases the clearance of LDL particles from the blood, thereby lowering plasma LDL cholesterol.",
+        source: "'cholestyramine... Increased Excretion of bile acids... Decrease in cholesterol.' The diagram shows this leads to increased uptake of cholesterol from the blood to replenish the pool used for bile acid synthesis. (Cholesterol Metabolism, Page 12)"
+    },
+    {
+        learningObjective: "LO1 (Plasma Lipid Transport): Explain the ways in which free fatty acids and lipids are transported in the blood.",
+        question: "During an overnight fast, hormone-sensitive lipase in adipose tissue is activated, releasing free fatty acids (FFAs) into the circulation to be used as fuel by other tissues. How are these water-insoluble FFAs transported in the blood?",
+        options: { 
+            A: "As part of the core of chylomicrons", 
+            B: "As part of the core of VLDL particles", 
+            C: "Bound to the plasma protein albumin", 
+            D: "In their free, unassociated form" 
+        },
+        correctAnswer: "C",
+        rationale: "Free fatty acids are hydrophobic and have limited solubility in aqueous plasma. To be transported from adipose tissue to other organs, they bind non-covalently to albumin, the most abundant plasma protein, which serves as their carrier.",
+        source: "'Free fatty acids released from adipose tissue transported bound to albumin in the plasma.' (Plasma Lipid Transport, Page 3)"
+    },
+    {
+        learningObjective: "LO1 (Plasma Lipid Transport): Explain the ways in which free fatty acids and lipids are transported in the blood.",
+        question: "A patient consumes a meal rich in triglycerides and cholesterol. These dietary lipids are absorbed and packaged into large lipoprotein particles for transport. What is the primary mode of transport for these complex lipids from the intestine into the systemic circulation?",
+        options: { 
+            A: "Bound to albumin in the portal vein", 
+            B: "As free molecules in the plasma", 
+            C: "As chylomicrons in the lymphatic system", 
+            D: "As VLDL particles in the portal vein" 
+        },
+        correctAnswer: "C",
+        rationale: "Dietary triglycerides and cholesterol are packaged into chylomicrons within intestinal enterocytes. These large particles are too big to enter the blood capillaries directly, so they are first secreted into the lymphatic system. They travel through the lymphatics to the thoracic duct, which then drains into the subclavian vein, allowing them to enter the systemic circulation.",
+        source: "'Complex lipids such as TGs, CH, CHE and PLs are transported in the plasma complexed with apoproteins called lipoproteins.' (Plasma Lipid Transport, Page 3) and 'Chylomicron enters lymphatics.' (Plasma Lipid Transport, Page 6)"
+    },
+    {
+        learningObjective: "LO1 (Plasma Lipid Transport): Explain the ways in which free fatty acids and lipids are transported in the blood.",
+        question: "A patient consumes a meal containing triglycerides made with medium-chain fatty acids (MCFAs). Unlike long-chain fatty acids, how are these MCFAs primarily absorbed and transported from the intestine?",
+        options: { 
+            A: "They are packaged into chylomicrons and enter the lymph.", 
+            B: "They are directly absorbed into the portal vein and transported bound to albumin.", 
+            C: "They are converted to short-chain fatty acids before absorption.", 
+            D: "They are transported as part of VLDL particles." 
+        },
+        correctAnswer: "B",
+        rationale: "Medium- and short-chain fatty acids are more water-soluble than long-chain fatty acids. They do not require packaging into chylomicrons. Instead, they are absorbed directly from the intestinal cells into the portal circulation, where they are transported to the liver primarily bound to albumin.",
+        source: "'Short- & medium- chain FAs & glycerol straight into portal vein.' (Plasma Lipid Transport, Page 7)"
+    },
+    {
+        learningObjective: "LO2 (Plasma Lipid Transport): Illustrate the structure of a lipoprotein particle and describe the biological function of the major types of apolipoproteins found in various lipoprotein particles.",
+        question: "A chylomicron circulating in the blood must interact with lipoprotein lipase (LPL) on the surface of capillary endothelial cells to deliver its triglyceride cargo. The activation of LPL requires the chylomicron to acquire which of the following apolipoproteins from HDL?",
+        options: { 
+            A: "ApoB-48", 
+            B: "ApoA-I", 
+            C: "ApoC-II", 
+            D: "ApoE" 
+        },
+        correctAnswer: "C",
+        rationale: "ApoC-II is the essential cofactor for lipoprotein lipase. Nascent chylomicrons and VLDL particles acquire ApoC-II from HDL particles in the circulation. Once ApoC-II binds to LPL, the enzyme becomes active and can hydrolyze the triglycerides in the core of the lipoprotein.",
+        source: "'LPL is inactive until it interacts with ApoCII.' (Plasma Lipid Transport, Page 5) and 'Summary: Function of... Apolipoproteins... ApoCII... Activator of LPL.' (Plasma Lipid Transport, Page 24)"
+    },
+    {
+        learningObjective: "LO2 (Plasma Lipid Transport): Illustrate the structure of a lipoprotein particle and describe the biological function of the major types of apolipoproteins found in various lipoprotein particles.",
+        question: "After a chylomicron has delivered most of its triglycerides, it becomes a chylomicron remnant. This remnant particle must be cleared from the circulation by the liver. The uptake of the remnant by liver receptors is primarily mediated by which apolipoprotein on its surface?",
+        options: { 
+            A: "ApoB-48", 
+            B: "ApoA-I", 
+            C: "ApoC-II", 
+            D: "ApoE" 
+        },
+        correctAnswer: "D",
+        rationale: "As chylomicrons are metabolized, they return ApoC-II to HDL and acquire ApoE. ApoE is the ligand that is recognized by receptors in the liver (such as the LDL receptor and LRP), mediating the endocytosis and clearance of the chylomicron remnants.",
+        source: "'ApoE... Receptor-mediated uptake of remnants.' (Plasma Lipid Transport, Page 24)"
+    },
+    {
+        learningObjective: "LO2 (Plasma Lipid Transport): Illustrate the structure of a lipoprotein particle and describe the biological function of the major types of apolipoproteins found in various lipoprotein particles.",
+        question: "A patient has a genetic defect that prevents the post-transcriptional editing of the ApoB mRNA in intestinal cells. This would result in the production of full-length ApoB-100 instead of ApoB-48 in the intestine. What would be the most likely consequence?",
+        options: { 
+            A: "Inability to form chylomicrons", 
+            B: "Formation of chylomicrons containing ApoB-100", 
+            C: "Decreased triglyceride absorption", 
+            D: "Abetalipoproteinemia" 
+        },
+        correctAnswer: "B",
+        rationale: "ApoB-48 is produced in the intestine from the same gene as ApoB-100 via RNA editing that introduces a premature stop codon. If this editing process fails, the intestinal cells will translate the full-length mRNA and produce ApoB-100. This would lead to the assembly and secretion of chylomicron-like particles that contain ApoB-100 instead of ApoB-48.",
+        source: "'In the mucosal cells... a CAA codon in the ApoB mRNA gets ‘edited' to the stop codon UAA... Thus only 48% of the ORF of ApoB gene is translated... producing the ApoB48 protein. In the liver, no RNA editing takes place...' (Plasma Lipid Transport, Page 10)"
+    },
+    {
+        learningObjective: "LO3 (Plasma Lipid Transport): Explain how dietary lipids and endogenously synthesized lipids are packaged into lipoproteins and describe the role of lipoprotein lipase and LDL receptor-mediated uptake...",
+        question: "A patient with familial hypercholesterolemia has a defect in the gene for the LDL receptor. This defect impairs the clearance of LDL from the blood. The LDL receptor recognizes which apolipoprotein on the surface of LDL particles?",
+        options: { 
+            A: "ApoA-I", 
+            B: "ApoB-100", 
+            C: "ApoC-II", 
+            D: "ApoE" 
+        },
+        correctAnswer: "B",
+        rationale: "Each LDL particle contains a single molecule of ApoB-100, which serves as the ligand for the LDL receptor. The binding of ApoB-100 to the LDL receptor initiates the endocytosis of the LDL particle, allowing cells to take up cholesterol.",
+        source: "'ApoB100... interacts with LDL receptor.' (Plasma Lipid Transport, Page 24)"
+    },
+    {
+        learningObjective: "LO3 (Plasma Lipid Transport): Explain how dietary lipids and endogenously synthesized lipids are packaged into lipoproteins and describe the role of lipoprotein lipase and LDL receptor-mediated uptake...",
+        question: "In a well-fed state, the liver packages endogenously synthesized triglycerides and cholesterol into lipoprotein particles for export to peripheral tissues. What is the name of this lipoprotein particle?",
+        options: { 
+            A: "Chylomicron", 
+            B: "Very-low-density lipoprotein (VLDL)", 
+            C: "Low-density lipoprotein (LDL)", 
+            D: "High-density lipoprotein (HDL)" 
+        },
+        correctAnswer: "B",
+        rationale: "VLDL is the primary transport vehicle for endogenous (liver-synthesized) triglycerides. The liver assembles TGs, cholesterol, and ApoB-100 into VLDL particles, which are then secreted into the bloodstream to deliver lipids to peripheral tissues.",
+        source: "'The TG is primarily endogenously synthesized from excess calories consumed... The ApoB protein in VLDL is ApoB100.' (Plasma Lipid Transport, Page 10)"
+    },
+    {
+        learningObjective: "LO3 (Plasma Lipid Transport): Explain how dietary lipids and endogenously synthesized lipids are packaged into lipoproteins and describe the role of lipoprotein lipase and LDL receptor-mediated uptake...",
+        question: "The conversion of VLDL to LDL in the circulation involves the removal of the particle's triglyceride core. This process is primarily mediated by the action of which enzyme?",
+        options: { 
+            A: "Hepatic lipase (HL)", 
+            B: "Lipoprotein lipase (LPL)", 
+            C: "Lecithin-cholesterol acyltransferase (LCAT)", 
+            D: "Hormone-sensitive lipase (HSL)" 
+        },
+        correctAnswer: "B",
+        rationale: "Lipoprotein lipase (LPL), located on the capillary walls of adipose and muscle tissue, hydrolyzes the triglycerides within VLDL particles. As triglycerides are removed, the VLDL particle shrinks and becomes denser, transforming first into an intermediate-density lipoprotein (IDL) and then into a cholesterol-rich low-density lipoprotein (LDL).",
+        source: "'Lipoprotein lipase is specific for TG in lipoproteins and act on TG that are packaged in chylomicrons and VLDLs and break it down to fatty acids and glycerol.' (Plasma Lipid Transport, Page 5)"
+    },
+    {
+        learningObjective: "LO4 (Plasma Lipid Transport): Explain how HDL is synthesized and its role in reverse transport of cholesterol from extrahepatic tissues back to the liver.",
+        question: "A patient is diagnosed with Tangier disease, characterized by orange-colored tonsils and very low levels of HDL. This disease is caused by a genetic defect in the ABCA1 transporter. The function of this transporter is to:",
+        options: { 
+            A: "Mediate the efflux of cholesterol and phospholipids from cells to lipid-poor ApoA-I.", 
+            B: "Esterify free cholesterol on the surface of HDL.", 
+            C: "Transfer cholesteryl esters from HDL to VLDL.", 
+            D: "Facilitate the uptake of HDL by the liver." 
+        },
+        correctAnswer: "A",
+        rationale: "The ABCA1 transporter is crucial for the first step of HDL formation. It actively transports (effluxes) cellular cholesterol and phospholipids from peripheral cells onto lipid-poor apolipoprotein A-I, forming nascent, discoidal HDL particles. A defect in ABCA1 prevents this initial lipidation, leading to rapid degradation of ApoA-I and consequently very low HDL levels.",
+        source: "'Mutations in ABCA1 gene causes Tangier disease. CH and PL are not transported to the liver, resulting in low levels of circulating HDL...' (Plasma Lipid Transport, Page 17)"
+    },
+    {
+        learningObjective: "LO4 (Plasma Lipid Transport): Explain how HDL is synthesized and its role in reverse transport of cholesterol from extrahepatic tissues back to the liver.",
+        question: "As nascent HDL circulates, it accumulates free cholesterol from peripheral tissues. This free cholesterol is then converted into cholesteryl esters, which move into the hydrophobic core of the HDL particle, allowing it to mature. This esterification reaction is catalyzed by which plasma enzyme?",
+        options: { 
+            A: "Lipoprotein lipase (LPL)", 
+            B: "Hepatic lipase (HL)", 
+            C: "Acyl-CoA:cholesterol acyltransferase (ACAT)", 
+            D: "Lecithin-cholesterol acyltransferase (LCAT)" 
+        },
+        correctAnswer: "D",
+        rationale: "LCAT is a plasma enzyme that associates with HDL particles. It catalyzes the transfer of a fatty acid from lecithin (phosphatidylcholine) to free cholesterol, forming a cholesteryl ester. This reaction is essential for trapping cholesterol within HDL and for the maturation of nascent HDL into spherical HDL3 and HDL2 particles.",
+        source: "'The nascent HDL particles get bound by lecithin-cholesterol acyl transferase (LCAT), a plasma protein. The enzyme removes a fatty acid from the phospholipid lecithin and attaches it to CH, converting it to CHE.' (Plasma Lipid Transport, Page 17)"
+    },
+    {
+        learningObjective: "LO4 (Plasma Lipid Transport): Explain how HDL is synthesized and its role in reverse transport of cholesterol from extrahepatic tissues back to the liver.",
+        question: "The process by which HDL removes excess cholesterol from peripheral cells and returns it to the liver for excretion is known as reverse cholesterol transport. The final step of the direct pathway involves the selective uptake of cholesteryl esters from HDL into hepatocytes, mediated by which receptor?",
+        options: { 
+            A: "LDL receptor (LDLR)", 
+            B: "VLDL receptor", 
+            C: "Scavenger receptor B1 (SR-B1)", 
+            D: "LRP1" 
+        },
+        correctAnswer: "C",
+        rationale: "Scavenger receptor B1 (SR-B1) is highly expressed on hepatocytes and steroidogenic tissues. It mediates the selective uptake of cholesteryl esters from the core of HDL particles into the cell without internalizing the entire HDL particle. This is the primary mechanism for the direct delivery of cholesterol from HDL back to the liver.",
+        source: "'Direct reverse cholesterol transport – HDL particles offload some of their CHE in the liver... This process is mediated by scavenger receptor class B member type 1 (SCARB1, SR-B1, SRBI) protein...' (Plasma Lipid Transport, Page 18)"
+    },
+    {
+        learningObjective: "LO5 (Plasma Lipid Transport): Describe the pathophysiology of abetalipoproteinemia, hypertriglyceridemia, hyperlipidemia, and hypercholesterolemia.",
+        question: "A child presents with severe fat malabsorption, steatorrhea, and neurological problems. A blood smear shows acanthocytes (spiculated red blood cells). Plasma lipid analysis reveals a near-complete absence of chylomicrons, VLDL, and LDL. This condition, abetalipoproteinemia, is caused by a defect in which protein?",
+        options: { 
+            A: "Apolipoprotein B", 
+            B: "Microsomal triglyceride-transfer protein (MTTP)", 
+            C: "Lipoprotein lipase (LPL)", 
+            D: "The LDL receptor" 
+        },
+        correctAnswer: "B",
+        rationale: "MTTP is essential for the assembly of ApoB-containing lipoproteins. It transfers triglycerides and other lipids to the nascent ApoB-48 (in intestine) and ApoB-100 (in liver) polypeptides. A defect in MTTP prevents the formation of both chylomicrons and VLDL, leading to the absence of these particles and their derivatives (IDL, LDL) in the plasma.",
+        source: "'Abetalipoproteinemia- genetic defect in synthesizing chylomicrons (& VLDL). Mutation in the gene for microsomal triglyceride-transfer protein (MTTP).' (Plasma Lipid Transport, Page 11)"
+    },
+    {
+        learningObjective: "LO5 (Plasma Lipid Transport): Describe the pathophysiology of abetalipoproteinemia, hypertriglyceridemia, hyperlipidemia, and hypercholesterolemia.",
+        question: "A patient presents with eruptive xanthomas and recurrent pancreatitis. A fasting lipid panel shows a triglyceride level of 4500 mg/dL and a creamy layer on top of the plasma sample after refrigeration. Cholesterol levels are near normal. This presentation is characteristic of Type I hyperlipoproteinemia, which can be caused by a deficiency in either lipoprotein lipase or its essential cofactor, which is:",
+        options: { 
+            A: "ApoA-I", 
+            B: "ApoB-100", 
+            C: "ApoC-II", 
+            D: "ApoE" 
+        },
+        correctAnswer: "C",
+        rationale: "Type I hyperlipoproteinemia (familial hyperchylomicronemia) is characterized by a massive accumulation of chylomicrons (and VLDL) due to an inability to clear triglycerides from the plasma. This is caused by a defect in the LPL system, which can be due to a deficiency in the LPL enzyme itself or its required activator, ApoC-II.",
+        source: "'A deficiency of LPL or Apo-CII can result in TGs not being cleared from the chylomicrons (& VLDL), resulting in the accumulation of TG-rich lipoproteins... This is known as Type I hyperlipoproteinemia...' (Plasma Lipid Transport, Page 12)"
+    },
+    {
+        learningObjective: "LO5 (Plasma Lipid Transport): Describe the pathophysiology of abetalipoproteinemia, hypertriglyceridemia, hyperlipidemia, and hypercholesterolemia.",
+        question: "A 45-year-old man is found to have tendon xanthomas and a plasma cholesterol level of 450 mg/dL, with a markedly elevated LDL level. His father died of a myocardial infarction at age 40. This clinical picture is most consistent with familial hypercholesterolemia, which is typically caused by a mutation in the gene encoding which protein?",
+        options: { 
+            A: "Apolipoprotein E", 
+            B: "Lipoprotein lipase", 
+            C: "The LDL receptor", 
+            D: "HMG-CoA reductase" 
+        },
+        correctAnswer: "C",
+        rationale: "Familial hypercholesterolemia (Type IIa hyperlipoproteinemia) is an autosomal dominant disorder characterized by extremely high levels of LDL cholesterol from birth. It is most commonly caused by mutations in the LDL receptor gene, which leads to impaired clearance of LDL from the circulation. This results in cholesterol deposition in tissues, such as tendons (xanthomas) and arteries (atherosclerosis).",
+        source: "'A deficiency of functional LDL receptors will increase plasma LDL level resulting in significant elevation of plasma CH. This is known as Type II hyperlipoproteinemia or familial hypercholesterolemia.' (Plasma Lipid Transport, Page 14)"
+    }
+];
+
+        const quizContainer = document.getElementById('quiz-container');
+        const themeToggleButton = document.getElementById('theme-toggle-button');
+        const bodyElement = document.body;
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                bodyElement.classList.add('light-theme');
+                themeToggleButton.textContent = 'Switch to Dark Mode';
+            } else {
+                bodyElement.classList.remove('light-theme');
+                themeToggleButton.textContent = 'Switch to Light Mode';
+            }
+            localStorage.setItem('quizTheme', theme);
+        }
+
+        function loadQuiz() {
+            quizData.forEach((qData, index) => {
+                const questionBlock = document.createElement('div');
+                questionBlock.classList.add('question-block');
+                questionBlock.id = `q${index}`;
+
+                const loText = document.createElement('div');
+                loText.classList.add('learning-objective');
+                loText.textContent = qData.learningObjective;
+                questionBlock.appendChild(loText);
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('question-text');
+                // Use innerHTML to correctly render any potential HTML tags in questions
+                questionText.innerHTML = `${index + 1}. ${qData.question}`;
+                questionBlock.appendChild(questionText);
+
+                const optionsDiv = document.createElement('div');
+                optionsDiv.classList.add('options');
+
+                for (const optionKey in qData.options) {
+                    const optionId = `q${index}_${optionKey}`;
+                    const label = document.createElement('label');
+                    label.htmlFor = optionId;
+
+                    const radioInput = document.createElement('input');
+                    radioInput.type = 'radio';
+                    radioInput.name = `q${index}`;
+                    radioInput.value = optionKey;
+                    radioInput.id = optionId;
+
+                    const labelText = document.createElement('span');
+                    labelText.innerHTML = ` ${optionKey}. ${qData.options[optionKey]}`;
+                    
+                    label.appendChild(radioInput);
+                    label.appendChild(labelText);
+                    optionsDiv.appendChild(label);
+                }
+                questionBlock.appendChild(optionsDiv);
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('button-container');
+
+                const checkButton = document.createElement('button');
+                checkButton.textContent = 'Check Answer';
+                checkButton.classList.add('check-button');
+                checkButton.addEventListener('click', () => checkAnswer(index));
+                buttonContainer.appendChild(checkButton);
+                
+                questionBlock.appendChild(buttonContainer);
+
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.classList.add('feedback');
+                questionBlock.appendChild(feedbackDiv);
+
+                quizContainer.appendChild(questionBlock);
+            });
+        }
+
+        function checkAnswer(questionIndex) {
+            const questionBlockElement = document.getElementById(`q${questionIndex}`);
+            const selectedRadioButton = questionBlockElement.querySelector('input[type="radio"]:checked');
+            const feedbackDiv = questionBlockElement.querySelector('.feedback');
+
+            if (!selectedRadioButton) {
+                 feedbackDiv.innerHTML = `<span class="feedback-status">Please select an answer.</span>`;
+                 feedbackDiv.className = 'feedback incorrect'; // Use incorrect styling for the alert
+                return;
+            }
+
+            const selectedOptionKey = selectedRadioButton.value;
+            const qData = quizData[questionIndex];
+            const correct = selectedOptionKey === qData.correctAnswer;
+
+            let feedbackHTML = '';
+
+            if (correct) {
+                feedbackHTML = `<span class="feedback-status">Correct!</span>`;
+                feedbackDiv.className = 'feedback correct';
+            } else {
+                 feedbackHTML = `<span class="feedback-status">Incorrect.</span> The correct answer is ${qData.correctAnswer}.`;
+                feedbackDiv.className = 'feedback incorrect';
+            }
+
+            feedbackHTML += `<div class="feedback-rationale"><strong>Rationale:</strong> ${qData.rationale}</div>`;
+            feedbackHTML += `<div class="feedback-source">${qData.source}</div>`;
+            feedbackDiv.innerHTML = feedbackHTML;
+        }
+
+        themeToggleButton.addEventListener('click', () => {
+            if (bodyElement.classList.contains('light-theme')) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            applyTheme(savedTheme);
+            loadQuiz();
+        });
+
+    </script>
+
+</body>
+</html>```
